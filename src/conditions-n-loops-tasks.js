@@ -263,8 +263,19 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  for (let i = 0; i < arr.length; i += 1) {
+    let leftS = null;
+    let rightS = null;
+    for (let j = 0; j < i; j += 1) {
+      leftS += arr[j];
+    }
+    for (let j = i + 1; j < arr.length; j += 1) {
+      rightS += arr[j];
+    }
+    if (leftS === rightS) return i;
+  }
+  return -1;
 }
 
 /**
@@ -288,8 +299,37 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const a = new Array(size);
+  for (let i = 0; i < size; i += 1) {
+    a[i] = new Array(size);
+    for (let j = 0; j < size; j += 1) {
+      const I = i + 1;
+      const J = j + 1;
+
+      const switcher = Math.floor((J - I + size) / size);
+
+      const Ic =
+        Math.abs(I - Math.floor(size / 2) - 1) +
+        Math.floor((I - 1) / Math.floor(size / 2)) * ((size - 1) % 2);
+      const Jc =
+        Math.abs(J - Math.floor(size / 2) - 1) +
+        Math.floor((J - 1) / Math.floor(size / 2)) * ((size - 1) % 2);
+
+      const Ring =
+        Math.floor(size / 2) - Math.floor((Math.abs(Ic - Jc) + Ic + Jc) / 2);
+
+      const Xs = I - Ring + J - Ring - 1;
+
+      const Coef = 4 * Ring * (size - Ring);
+
+      a[i][j] =
+        Coef +
+        switcher * Xs +
+        Math.abs(switcher - 1) * (4 * (size - 2 * Ring) - 2 - Xs);
+    }
+  }
+  return a;
 }
 
 /**
@@ -307,8 +347,22 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const matrixLink = matrix;
+  for (let layer = 0; layer < Math.floor(matrixLink.length / 2); layer += 1) {
+    const first = layer;
+    const last = matrixLink.length - 1 - layer;
+
+    for (let i = first; i < last; i += 1) {
+      const offset = i - first;
+      const top = matrixLink[first][i];
+      matrixLink[first][i] = matrixLink[last - offset][first];
+      matrixLink[last - offset][first] = matrixLink[last][last - offset];
+      matrixLink[last][last - offset] = matrixLink[i][last];
+      matrixLink[i][last] = top;
+    }
+  }
+  return matrix;
 }
 
 /**
